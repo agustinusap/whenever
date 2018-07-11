@@ -4,6 +4,8 @@ set :environment_variable, "RAILS_ENV"
 set :environment, "production"
 # Path defaults to the directory `whenever` was run from
 set :path, Whenever.path
+# Custom command wrapper, such as chruby-exec
+set :prefix, ""
 
 # Custom Chronic configuration for time parsing, empty by default
 # Full list of options at: https://github.com/mojombo/chronic/blob/master/lib/chronic/parser.rb
@@ -25,6 +27,6 @@ set :runner_command, case
 set :bundle_command, Whenever.bundler? ? "bundle exec" : ""
 
 job_type :command, ":task :output"
-job_type :rake,    "cd :path && :environment_variable=:environment :bundle_command rake :task --silent :output"
-job_type :script,  "cd :path && :environment_variable=:environment :bundle_command script/:task :output"
-job_type :runner,  "cd :path && :bundle_command :runner_command -e :environment ':task' :output"
+job_type :rake,    "cd :path && :prefix :environment_variable=:environment :bundle_command rake :task --silent :output"
+job_type :script,  "cd :path && :prefix :environment_variable=:environment :bundle_command script/:task :output"
+job_type :runner,  "cd :path && :prefix :bundle_command :runner_command -e :environment ':task' :output"
